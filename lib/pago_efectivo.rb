@@ -13,15 +13,15 @@ module PagoEfectivo
       'xmlns:soap' => 'http://schemas.xmlsoap.org/soap/envelope/'
     }
 
-    def initialize env=nil, proxy=false
+    def initialize api_server=nil, env=nil, proxy=false, crypto_path=nil, cip_path=nil
       if env == 'production'
-        @api_server = 'https://pagoefectivo.pe'
+        @api_server = api_server || 'https://pagoefectivo.pe'
       else
-        @api_server = 'https://pre.2b.pagoefectivo.pe'
+        @api_server = api_server || 'https://pre.2b.pagoefectivo.pe'
       end
 
-      crypto_path = '/PagoEfectivoWSCrypto/WSCrypto.asmx?WSDL'
-      cip_path = '/PagoEfectivoWSGeneralv2/service.asmx?WSDL'
+      crypto_path = crypto_path || '/PagoEfectivoWSCrypto/WSCrypto.asmx?WSDL'
+      cip_path = cip_path || '/PagoEfectivoWSGeneralv2/service.asmx?WSDL'
       crypto_service = @api_server + crypto_path
       cip_service = @api_server + cip_path
 
@@ -81,7 +81,7 @@ module PagoEfectivo
     # after unencrypt cip result this return like string so we need parse this
     # for access cip data in more easy way
     def parse_cip_result uncrypt_text, keys=[]
-      parser = Nori.new
+      parser = Nori.new(convert_tags_to: lambda { |tag| tag.snakecase.to_sym })
       cip = parser.parse uncrypt_text
       if keys.length > 0
         result = cip
@@ -94,6 +94,7 @@ module PagoEfectivo
         cip
       end
     end
+
 
     def generate_xml(cod_serv, currency, total, pay_methods, cod_trans, email,
                      user, additional_data, exp_date, place, pay_concept,
