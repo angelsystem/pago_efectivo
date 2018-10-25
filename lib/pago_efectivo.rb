@@ -96,7 +96,7 @@ module PagoEfectivo
 
     def generate_xml(currency, total, pay_methods, cod_trans, email,
                      user, additional_data, exp_date, place, pay_concept,
-                     origin_code, origin_type)
+                     origin_code, origin_type, campo_1)
       # cod_serv => código de servicio asignado
       # signer => trama firmada con llave privada
       child_hash = { sol_pago: {
@@ -125,7 +125,7 @@ module PagoEfectivo
                      tipo_origen: origin_type,
                      concepto_pago: pay_concept,
                      importe: total,
-                     campo1: '',
+                     campo1: campo_1,
                      campo2: '',
                      campo3: '',
                    }
@@ -139,10 +139,6 @@ module PagoEfectivo
                      param_email: {
                        nombre: '[UsuarioNombre]',
                        valor: user[:first_name]
-                     },
-                     param_email: {
-                       nombre: '[Moneda]',
-                       valor: currency[:symbol]
                      }
                    }
                  }
