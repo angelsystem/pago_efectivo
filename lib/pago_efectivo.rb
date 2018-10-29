@@ -13,7 +13,7 @@ module PagoEfectivo
       'xmlns:soap' => 'http://schemas.xmlsoap.org/soap/envelope/'
     }
 
-    def initialize code_service:, api_server:, env: nil, proxy: false, crypto_path: nil, cip_path: nil
+    def initialize(code_service:, api_server:, env: nil, proxy: false, crypto_path: nil, cip_path: nil)
       @code_service = code_service
       if env == 'production'
         @api_server = api_server || 'https://pagoefectivo.pe'
@@ -45,7 +45,7 @@ module PagoEfectivo
       end
     end
 
-    def set_keys public_key_path:, private_key_path:
+    def set_keys(public_key_path:, private_key_path:)
       raise 'paths no valid' unless public_key_path && private_key_path
       @private_key = File.open(private_key_path, 'rb') {|f| Base64.encode64(f.read)}
       @public_key = File.open(public_key_path, 'rb') {|f| Base64.encode64(f.read)}
